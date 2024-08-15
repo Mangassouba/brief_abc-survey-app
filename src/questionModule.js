@@ -1,22 +1,34 @@
-// const { ObjectId } = require('mongodb');
 const { connectToMongoDB } = require('./config/database');
 
 // Créer une nouvelle question
 async function createQuestion(question) {
-    const db = await connectToMongoDB();
-    // const existingAnswer = await db.collection('Questions').findOne({ id: question.id });
-    // if (existingAnswer) {
-    //     throw new Error(`La réponse avec l'ID ${question.id} existe déjà.`);
-    // }
-    const result = await db.collection('Questions').insertOne(question);
-    return result.insertedId;
+    try {
+        const db = await connectToMongoDB();
+        const existingAnswer = await db.collection('Questions').findOne({ id: question.id });
+        if (existingAnswer) {
+            throw new Error(`L'enquête avec l'ID ${question.id} existe déjà.`);
+            // return null; // Si la question existe déjà, vous pouvez retourner null ou une valeur spécifique
+        }
+        const result = await db.collection('Questions').insertOne(question);
+        console.log(`Question créée avec l'ID ${result.question.id}`);
+        return result.insertedId;
+    } catch (error) {
+        console.error(`L'enquête avec l'ID ${question.id} existe déjà.`);
+        // throw error; // Relancer l'erreur pour qu'elle puisse être gérée ailleurs si nécessaire
+    }
 }
 
 // Lire une question par ID
 async function getQuestionById(questionId) {
     const db = await connectToMongoDB();
-    const question = await db.collection('Questions').findOne({id: questionId});
+    const existingAnswer = await db.collection('Questions').findOne({ id: questionId});
+    if (existingAnswer) {
+        const question = await db.collection('Questions').findOne({id: questionId});
     return question;
+    }else{
+        console.log("L'ID n'existe pas")
+    }
+    
 }
 
 // Lire toutes les questions d'une enquête

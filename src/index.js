@@ -1,100 +1,88 @@
 const { createSurvey, getSurveyById, getAllSurveys, updateSurvey, deleteSurvey } = require('./surveyModule');
 const { createQuestion, getQuestionsBySurveyId, getQuestionById, updateQuestion, deleteQuestion } = require('./questionModule');
 const { createAnswer, getAnswersByQuestionId, deleteAnswer } = require('./answerModule');
+const {closeConnection} = require('./config/database');
 
 (async () => {
-    // Créer une enquête
-    // const surveyId = await createSurvey({
-    //     id : 2,
-    //     name: "Enquête de Satisfaction 002",
-    //     description: "Nouvelle enquête sur la satisfaction.",
-    //     createdAt: new Date(),
-    //     createdBy: {
-    //         employeeName: "John Doe",
-    //         employeeRole: "Chef de produit"
-    //     },
-    //     questions: []
-    // });
-    // console.log(`Nouvelle enquête créée avec ID: ${surveyId}`);
+    try {
+        await createSurvey({
+            id: 1,
+            name: "Enquête de Satisfaction 002",
+            description: "Nouvelle enquête sur la satisfaction.",
+            createdAt: new Date(),
+            createdBy: {
+                employeeName: "John Doe",
+                employeeRole: "Chef de produit"
+            },
+            questions: []
+        });
 
-    // // Lire l'enquête créée
-    const survey = await getSurveyById(1);
-    console.log('Enquête récupérée:', survey);
+        console.log(await getSurveyById(1));
 
-    // // Créer des questions pour l'enquête
-    // const question1Id = await createQuestion({
-    //     id : 1,
-    //     surveyId: surveyId,
-    //     title: "Comment évalueriez-vous notre produit ?",
-    //     type: "rating",
-    //     options: {
-    //         minValue: 1,
-    //         maxValue: 5,
-    //         step: 1
-    //     },
-    //     answers: []
-    // });
+        await createQuestion({
+            id: 1,
+            surveyId: 1,
+            title: "Comment évalueriez-vous notre produit ?",
+            type: "rating",
+            options: {
+                minValue: 1,
+                maxValue: 5,
+                step: 1
+            },
+            answers: []
+        });
 
-    // const question2Id = await createQuestion({
-    //     id : 1,
-    //     surveyId: 1,
-    //     title: "Recommanderiez-vous notre service à d'autres personnes ?",
-    //     type: "boolean",
-    //     answers: []
-    // });
+        await createQuestion({
+            id: 1,
+            surveyId: 1,
+            title: "Recommanderiez-vous notre service à d'autres personnes ?",
+            type: "boolean",
+            answers: []
+        });
 
-    // console.log(`Questions créées avec IDs: ${question1Id}, ${question2Id}`);
+        console.log(await getQuestionsBySurveyId(1));
+        console.log('Questions pour l\'enquête:');
 
-    // // Lire toutes les questions de l'enquête
-    const questions = await getQuestionsBySurveyId(1);
-    console.log('Questions pour l\'enquête:', questions);
+        await updateQuestion(1, {
+            title: "Comment évalueriez-vous notre service global ?"
+        });
+        console.log(`Question mise à jour`);
 
-    // // Mettre à jour une question
-    // const updateCount = await updateQuestion(1, {
-    //     title: "Comment évalueriez-vous notre service global ?"
-    // });
-    // console.log(`Nombre de questions mises à jour: ${updateCount}`);
+        console.log(await getQuestionById(1));
 
-    // // Lire la question mise à jour
-    // const updatedQuestion = await getQuestionById(1);
-    // console.log('Question mise à jour:', updatedQuestion);
+        await createAnswer({
+            id: 1,
+            questionId: 1,
+            title: "Très satisfait"
+        });
+        await createAnswer({
+            id: 1,
+            questionId: 1,
+            title: "Satisfait"
+        });
 
-    // // Créer des réponses pour la première question
-    // await createAnswer({
-    //     id : 1,
-    //     questionId: question1Id,
-    //     title: "Très satisfait"
-    // });
-    // await createAnswer({
-    //     id: 1,
-    //     questionId: question2Id,
-    //     title: "Satisfait"
-    // });
+        console.log(await getAnswersByQuestionId(1));
 
-    // // Lire les réponses pour une question
-    const answers = await getAnswersByQuestionId(1);
-    console.log('Réponses pour la question 1:', answers);
+        await deleteAnswer(1);
+        console.log(`Réponse supprimée`);
 
-    // // Supprimer une réponse
-    // const deletedAnswerCount = await deleteAnswer(1);
-    // console.log(`Nombre de réponses supprimées: ${deletedAnswerCount}`);
+        await deleteQuestion(1);
+        console.log(`Question supprimée`);
 
-    // // Supprimer une question
-    // const deletedQuestionCount = await deleteQuestion(1);
-    // console.log(`Nombre de questions supprimées: ${deletedQuestionCount}`);
+        await updateSurvey(1, {
+            description: "Enquête révisée sur la satisfaction."
+        });
+        console.log(`Enquête mise à jour`);
 
-    // // Mettre à jour l'enquête
-    // const surveyUpdateCount = await updateSurvey(2, {
-    //     description: "Enquête révisée sur la satisfaction."
-    // });
-    // console.log(`Nombre d'enquêtes mises à jour: ${surveyUpdateCount}`);
+        console.log(await getAllSurveys())
+        console.log('Toutes les enquêtes');
 
-    // // Lire toutes les enquêtes
-    // const allSurveys = await getAllSurveys();
-    // console.log('Toutes les enquêtes:', allSurveys);
+        await deleteSurvey(1);
+        console.log(`Enquête supprimée`);
 
-    // Supprimer l'enquête
-    // const deletedSurveyCount =  await deleteSurvey('2');
-    // console.log(`Nombre d'enquêtes supprimées: ${deletedSurveyCount}`);
-
+    } catch (error) {
+        console.error('Une erreur s\'est produite:', error);
+    } finally {
+        await closeConnection();
+    }
 })();
