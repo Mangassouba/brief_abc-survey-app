@@ -1,6 +1,5 @@
 const { connectToMongoDB } = require('./config/database');
 
-// Créer une nouvelle enquête
 async function createSurvey(survey) {
     try {
         const db = await connectToMongoDB();
@@ -13,11 +12,10 @@ async function createSurvey(survey) {
         return result.insertedId;
     } catch (error) {
         console.error(`L'enquête avec l'ID ${survey.id} existe déjà.`);
-        // throw error; // Relancer l'erreur pour qu'elle puisse être gérée ailleurs si nécessaire
+        
     }
 }
 
-// Lire une enquête par ID
 async function getSurveyById(surveyId) {
     const db = await connectToMongoDB();
     const existingAnswer = await db.collection('Surveys').findOne({ id: surveyId });
@@ -28,11 +26,8 @@ async function getSurveyById(surveyId) {
         console.log("L'ID n'existe pas")
     }
     
-    // const survey = await db.collection('Surveys').findOne({id: surveyId });
-    // return survey;
 }
 
-// Lire toutes les enquêtes
 async function getAllSurveys() {
     const db = await connectToMongoDB();
     const surveys = await db.collection('Surveys').find().toArray();
@@ -49,7 +44,6 @@ async function updateSurvey(surveyId, updateData) {
     return result.modifiedCount;
 }
 
-// Supprimer une enquête par ID
 async function deleteSurvey(surveyId) {
     const db = await connectToMongoDB();
     const result = await db.collection('Surveys').deleteOne({ id: surveyId });
@@ -64,4 +58,3 @@ module.exports = {
     deleteSurvey
 };
 
-// getAllSurveys();

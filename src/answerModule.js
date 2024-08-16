@@ -1,6 +1,5 @@
 const { connectToMongoDB } = require('./config/database');
 
-// Créer une nouvelle réponse
 async function createAnswer(answer) {
     try {
         const db = await connectToMongoDB();
@@ -16,7 +15,6 @@ async function createAnswer(answer) {
     }
 }
 
-// Lire les réponses pour une question
 async function getAnswersByQuestionId(questionId) {
     const db = await connectToMongoDB();
     const existingAnswer = await db.collection('Answers').findOne({ id: questionId});
@@ -28,7 +26,15 @@ async function getAnswersByQuestionId(questionId) {
     }
 }
 
-// Supprimer une réponse par ID
+async function updateAnswer(answerId, updateData) {
+    const db = await connectToMongoDB();
+    const result = await db.collection('Answers').updateOne(
+        { id: answerId },
+        { $set: updateData }
+    );
+    return result.modifiedCount;
+}
+
 async function deleteAnswer(answerId) {
     const db = await connectToMongoDB();
     const result = await db.collection('Answers').deleteOne({  id: answerId });
@@ -38,5 +44,6 @@ async function deleteAnswer(answerId) {
 module.exports = {
     createAnswer,
     getAnswersByQuestionId,
+    updateAnswer,
     deleteAnswer
 };

@@ -1,6 +1,6 @@
 const { createSurvey, getSurveyById, getAllSurveys, updateSurvey, deleteSurvey } = require('./surveyModule');
 const { createQuestion, getQuestionsBySurveyId, getQuestionById, updateQuestion, deleteQuestion } = require('./questionModule');
-const { createAnswer, getAnswersByQuestionId, deleteAnswer } = require('./answerModule');
+const { createAnswer, getAnswersByQuestionId,updateAnswer, deleteAnswer } = require('./answerModule');
 const {closeConnection} = require('./config/database');
 
 (async () => {
@@ -73,6 +73,11 @@ const {closeConnection} = require('./config/database');
             description: "Enquête révisée sur la satisfaction."
         });
         console.log(`Enquête mise à jour`);
+
+        await updateAnswer(1, { 
+            title: "Très satisfait avec quelques réserves" 
+        });
+        console.log(`answer mise à jour`);
 
         console.log(await getAllSurveys())
         console.log('Toutes les enquêtes');
