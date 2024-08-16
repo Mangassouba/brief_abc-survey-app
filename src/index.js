@@ -6,7 +6,7 @@ const {closeConnection} = require('./config/database');
 (async () => {
     try {
         await createSurvey({
-            id: 1,
+            surveyId: 1,
             name: "Enquête de Satisfaction 002",
             description: "Nouvelle enquête sur la satisfaction.",
             createdAt: new Date(),
@@ -20,7 +20,7 @@ const {closeConnection} = require('./config/database');
         console.log(await getSurveyById(1));
 
         await createQuestion({
-            id: 1,
+            questionId: 1,
             surveyId: 1,
             title: "Comment évalueriez-vous notre produit ?",
             type: "rating",
@@ -33,7 +33,7 @@ const {closeConnection} = require('./config/database');
         });
 
         await createQuestion({
-            id: 1,
+            questionId: 1,
             surveyId: 1,
             title: "Recommanderiez-vous notre service à d'autres personnes ?",
             type: "boolean",
@@ -51,12 +51,12 @@ const {closeConnection} = require('./config/database');
         console.log(await getQuestionById(1));
 
         await createAnswer({
-            id: 1,
+            answerId: 1,
             questionId: 1,
             title: "Très satisfait"
         });
         await createAnswer({
-            id: 1,
+            answerId: 1,
             questionId: 1,
             title: "Satisfait"
         });

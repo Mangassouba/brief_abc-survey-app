@@ -3,23 +3,23 @@ const { connectToMongoDB } = require('./config/database');
 async function createQuestion(question) {
     try {
         const db = await connectToMongoDB();
-        const existingAnswer = await db.collection('Questions').findOne({ id: question.id });
+        const existingAnswer = await db.collection('questions').findOne({ questionId: question.questionId });
         if (existingAnswer) {
-            throw new Error(`L'enquête avec l'ID ${question.id} existe déjà.`);
+            throw new Error(`L'enquête avec l'ID ${question.questionId} existe déjà.`);
         }
-        const result = await db.collection('Questions').insertOne(question);
-        console.log(`Question créée avec l'ID ${result.question.id}`);
+        const result = await db.collection('questions').insertOne(question);
+        console.log(`Question créée avec l'ID ${result.question.questionId}`);
         return result.insertedId;
     } catch (error) {
-        console.error(`L'enquête avec l'ID ${question.id} existe déjà.`);
+        console.error(`L'enquête avec l'ID ${question.questionId} existe déjà.`);
     }
 }
 
 async function getQuestionById(questionId) {
     const db = await connectToMongoDB();
-    const existingAnswer = await db.collection('Questions').findOne({ id: questionId});
+    const existingAnswer = await db.collection('questions').findOne({ questionId: questionId});
     if (existingAnswer) {
-        const question = await db.collection('Questions').findOne({id: questionId});
+        const question = await db.collection('questions').findOne({questionId: questionId});
     return question;
     }else{
         console.log("L'ID n'existe pas")
@@ -29,14 +29,14 @@ async function getQuestionById(questionId) {
 
 async function getQuestionsBySurveyId(surveyId) {
     const db = await connectToMongoDB();
-    const questions = await db.collection('Questions').find({ id: surveyId}).toArray();
+    const questions = await db.collection('questions').find({ questionId: surveyId}).toArray();
     return questions;
 }
 
 async function updateQuestion(questionId, updateData) {
     const db = await connectToMongoDB();
-    const result = await db.collection('Questions').updateOne(
-        { id: questionId },
+    const result = await db.collection('questions').updateOne(
+        { questionId: questionId },
         { $set: updateData }
     );
     return result.modifiedCount;
@@ -44,7 +44,7 @@ async function updateQuestion(questionId, updateData) {
 
 async function deleteQuestion(questionId) {
     const db = await connectToMongoDB();
-    const result = await db.collection('Questions').deleteOne({ id: questionId });
+    const result = await db.collection('questions').deleteOne({ questionId: questionId });
     return result.deletedCount;
 }
 
